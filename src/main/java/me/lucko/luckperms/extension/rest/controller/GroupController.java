@@ -30,10 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.lucko.luckperms.extension.rest.model.GroupSearchResult;
-import me.lucko.luckperms.extension.rest.model.PermissionCheckRequest;
-import me.lucko.luckperms.extension.rest.model.PermissionCheckResult;
-import me.lucko.luckperms.extension.rest.model.SearchRequest;
+import me.lucko.luckperms.extension.rest.model.*;
 
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.messaging.MessagingService;
@@ -308,7 +305,7 @@ public class GroupController implements PermissionHolderController {
     @Override
     public void metaPut(Context ctx) {
         String name = ctx.pathParam("id");
-        UserController.MetaChangeReq body = ctx.bodyAsClass(UserController.MetaChangeReq.class);
+        MetaChangeRequest body = ctx.bodyAsClass(MetaChangeRequest.class);
 
         CompletableFuture<Void> future = this.groupManager.modifyGroup(name, group -> {
             group.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals(body.metaKey())));

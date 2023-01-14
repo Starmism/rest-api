@@ -30,11 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.lucko.luckperms.extension.rest.model.PermissionCheckRequest;
-import me.lucko.luckperms.extension.rest.model.PermissionCheckResult;
-import me.lucko.luckperms.extension.rest.model.SearchRequest;
-import me.lucko.luckperms.extension.rest.model.TrackRequest;
-import me.lucko.luckperms.extension.rest.model.UserSearchResult;
+import me.lucko.luckperms.extension.rest.model.*;
 
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.context.ContextSet;
@@ -258,13 +254,11 @@ public class UserController implements PermissionHolderController {
         ctx.future(future);
     }
 
-    public record MetaChangeReq(@JsonProperty(required = true) String metaKey, @JsonProperty(required = true) String metaValue) { }
-
     // PUT /user/{id}/meta
     @Override
     public void metaPut(Context ctx) throws JsonProcessingException {
         UUID uniqueId = pathParamAsUuid(ctx);
-        MetaChangeReq body = ctx.bodyAsClass(MetaChangeReq.class);
+        MetaChangeRequest body = ctx.bodyAsClass(MetaChangeRequest.class);
 
         CompletableFuture<Void> future = this.userManager.modifyUser(uniqueId, user -> {
             user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals(body.metaKey())));
