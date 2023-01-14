@@ -976,6 +976,19 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+              examples:
+                example-1:
+                  value:
+                    meta:
+                      nametag-color: red
+                      fly-speed: '5'
+                    prefix: '[Admin] '
+                    suffix: ' [the great]'
+                    primaryGroup: admin
         '404':
           description: Group doesn't exist
       operationId: get-group-name-meta
