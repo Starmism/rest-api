@@ -45,7 +45,9 @@ import net.luckperms.api.model.PlayerSaveResult;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.matcher.NodeMatcher;
+import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.query.QueryOptions;
 import net.luckperms.api.track.DemotionResult;
 import net.luckperms.api.track.PromotionResult;
@@ -253,6 +255,22 @@ public class UserController implements PermissionHolderController {
         UUID uniqueId = pathParamAsUuid(ctx);
         CompletableFuture<CachedMetaData> future = this.userManager.loadUser(uniqueId)
                 .thenApply(user -> user.getCachedData().getMetaData());
+        ctx.future(future);
+    }
+
+    public record MetaChangeReq(@JsonProperty(required = true) String metaKey, @JsonProperty(required = true) String metaValue) { }
+
+    // PUT /user/{id}/meta
+    @Override
+    public void metaPut(Context ctx) throws JsonProcessingException {
+        UUID uniqueId = pathParamAsUuid(ctx);
+        MetaChangeReq body = ctx.bodyAsClass(MetaChangeReq.class);
+
+        CompletableFuture<Void> future = this.userManager.modifyUser(uniqueId, user -> {
+            user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals(body.metaKey())));
+
+            user.data().add(MetaNode.builder(body.metaKey(), body.metaValue()).build());
+        });
         ctx.future(future);
     }
 

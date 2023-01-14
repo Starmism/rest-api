@@ -433,6 +433,26 @@ paths:
           description: User doesn't exist
       operationId: get-user-uniqueId-meta
       description: Get a users metadata
+    put:
+      summary: Replace one meta value in a user
+      tags:
+        - Users
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: User doesn't exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetaChangeRequest'
+            examples:
+              example-1:
+                metaKey: nickname
+                metaValue: Lucko
+      operationId: put-user-uniqueId-meta
+      description: Replace one of the users metadata
   '/user/{uniqueId}/permissionCheck':
     parameters:
       - $ref: '#/components/parameters/uniqueId'
@@ -956,23 +976,30 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Metadata'
-              examples:
-                example-1:
-                  value:
-                    meta:
-                      nametag-color: red
-                      fly-speed: '5'
-                    prefix: '[Admin] '
-                    suffix: ' [the great]'
-                    primaryGroup: admin
         '404':
           description: Group doesn't exist
       operationId: get-group-name-meta
       description: Get the groups metadata
+    put:
+      summary: Replace one meta value in a group
+      tags:
+        - Groups
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Group doesn't exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetaChangeRequest'
+            examples:
+              example-1:
+                metaKey: nickname
+                metaValue: Lucko
+      operationId: put-group-name-meta
+      description: Replace one of the groups metadata
   '/group/{name}/permissionCheck':
     parameters:
       - $ref: '#/components/parameters/name'
@@ -1519,6 +1546,26 @@ components:
         example-1:
           track: staff
       description: A request to promote or demote a user along a track.
+    MetaChangeRequest:
+      title: MetaChangeRequest
+      type: object
+      properties:
+        metaKey:
+          type: string
+          example: nickname
+          minLength: 1
+        metaValue:
+          type: string
+          example: Lucko
+          minLength: 1
+      required:
+        - metaKey
+        - metaValue
+      x-examples:
+        example-1:
+          metaKey: nickname
+          metaValue: Lucko
+      description: A request to replace a users meta value
     UserSearchResult:
       title: UserSearchResult
       type: object

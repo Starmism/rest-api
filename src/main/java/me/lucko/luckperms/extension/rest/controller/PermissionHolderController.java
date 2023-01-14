@@ -65,6 +65,9 @@ public interface PermissionHolderController {
     // GET /<type>/{id}/meta
     void metaGet(Context ctx) throws Exception;
 
+    // PUT /<type>/{id}/meta
+    void metaPut(Context ctx) throws Exception;
+
     // GET /<type>/{id}/permissionCheck
     void permissionCheck(Context ctx) throws Exception;
 

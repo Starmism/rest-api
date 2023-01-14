@@ -41,7 +41,9 @@ import net.luckperms.api.model.PermissionHolder;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.matcher.NodeMatcher;
+import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.query.QueryOptions;
 
 import io.javalin.http.Context;
@@ -300,6 +302,20 @@ public class GroupController implements PermissionHolderController {
                 ctx.json(result);
             }
         });
+    }
+
+    // PUT /group/{id}/meta
+    @Override
+    public void metaPut(Context ctx) {
+        String name = ctx.pathParam("id");
+        UserController.MetaChangeReq body = ctx.bodyAsClass(UserController.MetaChangeReq.class);
+
+        CompletableFuture<Void> future = this.groupManager.modifyGroup(name, group -> {
+            group.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals(body.metaKey())));
+
+            group.data().add(MetaNode.builder(body.metaKey(), body.metaValue()).build());
+        });
+        ctx.future(future);
     }
 
     // GET /group/{id}/permissionCheck

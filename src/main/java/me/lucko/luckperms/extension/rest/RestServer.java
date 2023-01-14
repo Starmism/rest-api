@@ -153,7 +153,10 @@ public class RestServer implements AutoCloseable {
                 put(controller::nodesSet);
             });
 
-            get("meta", controller::metaGet);
+            path("meta", () -> {
+                get(controller::metaGet);
+                put(controller::metaPut);
+            });
 
             path("permissionCheck", () -> {
                 get(controller::permissionCheck);
